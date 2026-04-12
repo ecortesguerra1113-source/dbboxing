@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>DB Boxing — Dashboard Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:#E8002D; --red2:#9b001e; --black:#060606; --dark:#0f0f0f;
+  --card:#141414; --card2:#1a1a1a; --border:#222; --border2:#2a2a2a;
+  --text:#f0f0f0; --sub:#777; --sub2:#aaa;
+  --green:#00C853; --green2:#1b5e20; --green3:#c8e6c9;
+  --amber:#FF9100; --blue:#2979FF; --purple:#AA00FF;
+  --italian-green:#009246; --italian-red:#CE2B37;
+  --display:'Bebas Neue',cursive;
+  --cond:'Barlow Condensed',sans-serif;
+  --sans:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--black);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── HEADER ──────────────────────────────────────── */
+.header{
+  background:linear-gradient(135deg,#0a0a0a 0%,#1a0005 50%,#080808 100%);
+  border-bottom:1px solid var(--border2);
+  padding:16px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  backdrop-filter:blur(20px);
+}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-logo{
+  font-family:var(--display);font-size:1.6rem;letter-spacing:3px;line-height:1;
+}
+.header-logo .g{color:var(--italian-green)}
+.header-logo .w{color:#fff}
+.header-logo .r{color:var(--italian-red)}
+.header-badge{
+  background:var(--red);color:#fff;
+  font-family:var(--cond);font-size:0.62rem;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;
+  border-radius:4px;padding:3px 10px;
+}
+.header-right{display:flex;align-items:center;gap:12px}
+.live-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--green);
+  animation:pulse-dot 2s ease infinite;flex-shrink:0;
+}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+.live-label{font-family:var(--cond);font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub2)}
+.refresh-btn{
+  background:var(--card2);border:1px solid var(--border2);
+  color:var(--sub2);border-radius:8px;padding:7px 12px;
+  font-family:var(--cond);font-size:0.72rem;letter-spacing:1px;
+  cursor:pointer;transition:all 0.2s;text-transform:uppercase;
+}
+.refresh-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* ── FLAG ──────────────────────────────────────── */
+.flag{display:flex;height:2px}
+.flag div{flex:1}
+.flag .fg{background:var(--italian-green)}
+.flag .fw{background:#fff}
+.flag .fr{background:var(--italian-red)}
+
+/* ── LAYOUT ────────────────────────────────────── */
+.page{max-width:1100px;margin:0 auto;padding:20px 16px 40px}
+
+.sec-label{
+  font-family:var(--cond);font-size:0.62rem;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;color:var(--red);
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── KPI GRID ──────────────────────────────────── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:20px}
+.kpi{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:16px;
+  position:relative;overflow:hidden;
+  transition:border-color 0.2s;
+  animation:fadeUp 0.4s ease both;
+}
+.kpi:hover{border-color:var(--border2)}
+.kpi::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+}
+.kpi.red::before{background:var(--red)}
+.kpi.green::before{background:var(--green)}
+.kpi.amber::before{background:var(--amber)}
+.kpi.blue::before{background:var(--blue)}
+.kpi.purple::before{background:var(--purple)}
+.kpi-icon{font-size:1.4rem;margin-bottom:8px;display:block}
+.kpi-label{font-family:var(--cond);font-size:0.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:4px}
+.kpi-value{font-family:var(--display);font-size:2rem;letter-spacing:1px;color:#fff;line-height:1}
+.kpi-value.sm{font-size:1.5rem}
+.kpi-sub{font-size:0.7rem;color:var(--sub);margin-top:4px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.kpi:nth-child(1){animation-delay:0.05s}
+.kpi:nth-child(2){animation-delay:0.10s}
+.kpi:nth-child(3){animation-delay:0.15s}
+.kpi:nth-child(4){animation-delay:0.20s}
+.kpi:nth-child(5){animation-delay:0.25s}
+.kpi:nth-child(6){animation-delay:0.30s}
+
+/* ── CARDS ─────────────────────────────────────── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+@media(max-width:640px){.two-col{grid-template-columns:1fr}}
+
+.dash-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;
+}
+.dash-card-head{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.dash-card-head h3{
+  font-family:var(--cond);font-size:0.75rem;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;color:var(--sub2);
+}
+.dash-card-body{padding:14px 16px}
+
+/* Table */
+.dtable{width:100%;border-collapse:collapse;font-size:0.8rem}
+.dtable th{
+  font-family:var(--cond);font-size:0.62rem;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);
+  padding:6px 10px;border-bottom:1px solid var(--border);text-align:left;
+}
+.dtable td{padding:8px 10px;border-bottom:1px solid #1a1a1a;color:var(--sub2);vertical-align:middle}
+.dtable tr:last-child td{border:none}
+.dtable td strong{color:#fff}
+.dtable tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:4px;padding:2px 8px;font-family:var(--cond);font-size:0.65rem;font-weight:700;letter-spacing:0.5px}
+.badge.green{background:#0d2e0d;color:#69f0ae;border:1px solid #1a5e1a}
+.badge.red{background:#2e0d0d;color:#ff6090;border:1px solid #5e1a1a}
+.badge.amber{background:#2e1a0d;color:#ffd180;border:1px solid #5e3a1a}
+.badge.blue{background:#0d1a2e;color:#82b1ff;border:1px solid #1a3a5e}
+.badge.ok{background:#0d2e0d;color:#69f0ae}
+.badge.warn{background:#2e1a0d;color:#ffd180}
+.badge.out{background:#2e0d0d;color:#ff6090}
+
+/* Progress bar */
+.prog-wrap{background:#1a1a1a;border-radius:4px;height:6px;overflow:hidden;margin-top:4px}
+.prog-bar{height:100%;border-radius:4px;transition:width 1s ease}
+.prog-bar.green{background:var(--green)}
+.prog-bar.amber{background:var(--amber)}
+.prog-bar.red{background:var(--red)}
+
+/* Sede tabs */
+.sede-tabs{display:flex;gap:6px;margin-bottom:14px}
+.sede-tab{
+  flex:1;padding:8px;border-radius:8px;text-align:center;
+  font-family:var(--cond);font-size:0.7rem;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;cursor:pointer;border:1px solid var(--border);
+  background:var(--card2);color:var(--sub);transition:all 0.2s;
+}
+.sede-tab.active{background:#1a0008;border-color:var(--red);color:var(--red)}
+
+/* Chart bars */
+.bar-chart{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.bar-item{display:flex;align-items:center;gap:10px}
+.bar-label{font-family:var(--cond);font-size:0.7rem;color:var(--sub2);width:80px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;background:#1a1a1a;border-radius:4px;height:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;background:var(--red);transition:width 1s ease}
+.bar-val{font-family:var(--cond);font-size:0.68rem;color:var(--sub2);width:60px;text-align:right;flex-shrink:0}
+
+/* Loading spinner */
+.spinner{
+  width:20px;height:20px;border:2px solid var(--border);
+  border-top-color:var(--red);border-radius:50%;
+  animation:spin 0.8s linear infinite;margin:20px auto;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.empty-state{text-align:center;padding:24px;color:var(--sub);font-size:0.82rem}
+
+/* Cycle timeline */
+.cycle{display:flex;align-items:center;gap:0;overflow-x:auto;padding:4px 0;margin-bottom:20px}
+.cycle-step{
+  flex:1;min-width:100px;background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:12px 10px;text-align:center;position:relative;margin-right:24px;
+}
+.cycle-step:last-child{margin-right:0}
+.cycle-step::after{
+  content:'→';position:absolute;right:-20px;top:50%;transform:translateY(-50%);
+  color:var(--red);font-size:1rem;font-weight:900;
+}
+.cycle-step:last-child::after{display:none}
+.cycle-icon{font-size:1.4rem;display:block;margin-bottom:4px}
+.cycle-title{font-family:var(--cond);font-size:0.65rem;font-weight:700;letter-spacing:1px;color:#fff}
+.cycle-sub{font-size:0.6rem;color:var(--sub);margin-top:2px}
+
+/* Stock indicator */
+.stock-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1a1a1a}
+.stock-row:last-child{border:none}
+.stock-name{font-family:var(--cond);font-size:0.75rem;font-weight:600;color:#fff;flex:1}
+.stock-sede{font-size:0.65rem;color:var(--sub);display:block;margin-top:1px}
+.stock-num{font-family:var(--display);font-size:1.4rem;color:#fff;flex-shrink:0}
+.stock-status{font-size:1rem;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">
+      <span class="g">DI</span><span class="w">VISI</span><span class="r">ÓN</span> <span class="w">BOX</span>
+    </div>
+    <div class="header-badge">Admin</div>
+  </div>
+  <div class="header-right">
+    <div class="live-dot"></div>
+    <div class="live-label" id="last-update">Cargando...</div>
+    <button class="refresh-btn" onclick="loadData()">⟳ Actualizar</button>
+  </div>
+</div>
+<div class="flag"><div class="fg"></div><div class="fw"></div><div class="fr"></div></div>
+
+<div class="page">
+
+  <!-- CICLO OPERATIVO -->
+  <div class="sec-label" style="margin-top:16px">⚙️ Ciclo Operativo</div>
+  <div class="cycle">
+    <div class="cycle-step">
+      <span class="cycle-icon">🏋️</span>
+      <div class="cycle-title">Cliente compra</div>
+      <div class="cycle-sub">Visicooler</div>
+    </div>
+    <div class="cycle-step">
+      <span class="cycle-icon">📲</span>
+      <div class="cycle-title">Vendedor registra</div>
+      <div class="cycle-sub">App celular</div>
+    </div>
+    <div class="cycle-step">
+      <span class="cycle-icon">⚡</span>
+      <div class="cycle-title">Sheets actualiza</div>
+      <div class="cycle-sub">Tiempo real</div>
+    </div>
+    <div class="cycle-step">
+      <span class="cycle-icon">📊</span>
+      <div class="cycle-title">Tú controlas</div>
+      <div class="cycle-sub">Este dashboard</div>
+    </div>
+  </div>
+
+  <!-- KPIs HOY -->
+  <div class="sec-label">📊 KPIs del Día</div>
+  <div class="kpi-grid" id="kpi-grid">
+    <div class="kpi red"><span class="kpi-icon">💰</span><div class="kpi-label">Ventas Hoy</div><div class="kpi-value" id="k-ventas">$0</div><div class="kpi-sub">total ingresado</div></div>
+    <div class="kpi green"><span class="kpi-icon">📦</span><div class="kpi-label">Unidades Hoy</div><div class="kpi-value" id="k-units">0</div><div class="kpi-sub">productos vendidos</div></div>
+    <div class="kpi amber"><span class="kpi-icon">📈</span><div class="kpi-label">Margen Hoy</div><div class="kpi-value" id="k-margen">$0</div><div class="kpi-sub" id="k-margen-pct">0% sobre venta</div></div>
+    <div class="kpi blue"><span class="kpi-icon">🏠</span><div class="kpi-label">San Miguel</div><div class="kpi-value sm" id="k-sm">$0</div><div class="kpi-sub">hoy</div></div>
+    <div class="kpi purple"><span class="kpi-icon">🏠</span><div class="kpi-label">La Cisterna</div><div class="kpi-value sm" id="k-cis">$0</div><div class="kpi-sub">hoy</div></div>
+    <div class="kpi amber"><span class="kpi-icon">📅</span><div class="kpi-label">Esta Semana</div><div class="kpi-value sm" id="k-semana">$0</div><div class="kpi-sub">acumulado</div></div>
+  </div>
+
+  <!-- VENTAS + COMISIONES -->
+  <div class="two-col">
+
+    <!-- Ventas por vendedor -->
+    <div class="dash-card">
+      <div class="dash-card-head">
+        <h3>👥 Ventas por Vendedor — Hoy</h3>
+      </div>
+      <div class="dash-card-body">
+        <div class="bar-chart" id="chart-vendedores">
+          <div class="empty-state">Cargando...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comisiones -->
+    <div class="dash-card">
+      <div class="dash-card-head">
+        <h3>💵 Comisiones — Hoy</h3>
+      </div>
+      <div class="dash-card-body">
+        <table class="dtable" id="table-comisiones">
+          <tr><td class="empty-state" colspan="3">Cargando...</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- STOCK -->
+  <div class="sec-label">📦 Stock Disponible</div>
+  <div class="two-col">
+    <div class="dash-card">
+      <div class="dash-card-head">
+        <h3>📍 San Miguel</h3>
+        <span class="badge blue">Visicooler</span>
+      </div>
+      <div class="dash-card-body" id="stock-sm">
+        <div class="empty-state">Actualiza el stock manualmente en Sheets</div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-head">
+        <h3>📍 La Cisterna</h3>
+        <span class="badge blue">Visicooler</span>
+      </div>
+      <div class="dash-card-body" id="stock-cis">
+        <div class="empty-state">Actualiza el stock manualmente en Sheets</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÚLTIMAS VENTAS -->
+  <div class="sec-label">🕐 Últimas Ventas</div>
+  <div class="dash-card">
+    <div class="dash-card-head">
+      <h3>Registro en tiempo real</h3>
+      <span class="badge green">● En vivo</span>
+    </div>
+    <div class="dash-card-body" style="overflow-x:auto">
+      <table class="dtable" id="table-ventas">
+        <thead>
+          <tr>
+            <th>Hora</th><th>Sede</th><th>Vendedor</th><th>Prod 1</th>
+            <th>Cant</th><th>Prod 2</th><th>Cant</th><th>Total</th><th>Pago</th>
+          </tr>
+        </thead>
+        <tbody id="ventas-body">
+          <tr><td colspan="9" class="empty-state">Cargando ventas...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MARGEN & COSTOS -->
+  <div class="sec-label" style="margin-top:20px">📉 Márgenes & Costos — Semana</div>
+  <div class="two-col">
+    <div class="dash-card">
+      <div class="dash-card-head"><h3>💹 Resumen Financiero</h3></div>
+      <div class="dash-card-body">
+        <table class="dtable" id="table-financiero">
+          <tr><td colspan="2" class="empty-state">Cargando...</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-head"><h3>🏆 Producto más vendido — Semana</h3></div>
+      <div class="dash-card-body">
+        <div class="bar-chart" id="chart-productos">
+          <div class="empty-state">Cargando...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+// ══════════════════════════════════════════════════════
+// CONFIGURACIÓN — reemplaza con tu Apps Script URL
+// ══════════════════════════════════════════════════════
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweSPOGTOsvwH1EBlnTkUy9Brh6nbH43tRT8DjYS3U9haCho7icIKcU9oiGFpWnePVP0Q/exec';
+const VENDEDORES = ['Angelo Alvarez','Angelo Arcoverde','Xoly','Karen'];
+const PRECIOS = {SUERO:2000,JUGO:1900};
+const PRECIOS_PACK6 = {SUERO:9900,JUGO:8100};
+const COSTO = {SUERO:950,JUGO:900};
+
+function calcPrecio(tipo,cant){
+  if(!tipo||!cant) return 0;
+  return Math.floor(cant/6)*PRECIOS_PACK6[tipo]+(cant%6)*PRECIOS[tipo];
+}
+function calcCosto(tipo,cant){
+  if(!tipo||!cant) return 0;
+  return cant*COSTO[tipo];
+}
+function fmt(n){return '$'+Math.round(n).toLocaleString('es-CL')}
+function parseDate(dateStr){
+  if(!dateStr) return null;
+  // Format: "11-04-2026 08:22 p. m." or "11-04-2026 08:22"
+  const clean = String(dateStr).trim();
+  const match = clean.match(/(\d{2})-(\d{2})-(\d{4})/);
+  if(!match) return null;
+  const [,day,month,year] = match;
+  // Get time part
+  const timePart = clean.split(' ').slice(1).join(' ');
+  let hour=0,min=0;
+  const tMatch = timePart.match(/(\d{1,2}):(\d{2})/);
+  if(tMatch){
+    hour=parseInt(tMatch[1]); min=parseInt(tMatch[2]);
+    if(timePart.toLowerCase().includes('p') && hour<12) hour+=12;
+    if(timePart.toLowerCase().includes('a') && hour===12) hour=0;
+  }
+  return new Date(parseInt(year),parseInt(month)-1,parseInt(day),hour,min);
+}
+function isToday(dateStr){
+  const d = parseDate(dateStr);
+  if(!d) return false;
+  const t = new Date();
+  return d.getDate()===t.getDate()&&d.getMonth()===t.getMonth()&&d.getFullYear()===t.getFullYear();
+}
+function isThisWeek(dateStr){
+  const d = parseDate(dateStr);
+  if(!d) return false;
+  const now = new Date();
+  const startOfWeek = new Date(now);
+  const day = now.getDay(); // 0=domingo
+  const diffToMonday = day === 0 ? -6 : 1 - day; // retroceder al lunes
+  startOfWeek.setDate(now.getDate() + diffToMonday);
+  startOfWeek.setHours(0,0,0,0);
+  return d >= startOfWeek;
+}
+function getHora(dateStr){
+  if(!dateStr) return '';
+  const clean = String(dateStr).trim();
+  const tMatch = clean.match(/(\d{1,2}):(\d{2})/);
+  if(!tMatch) return '';
+  let h=parseInt(tMatch[1]), m=tMatch[2];
+  if(clean.toLowerCase().includes('p') && h<12) h+=12;
+  if(clean.toLowerCase().includes('a') && h===12) h=0;
+  return `${String(h).padStart(2,'0')}:${m}`;
+}
+
+// ── MOCK DATA (mientras conectas el Sheets real) ───────
+function getMockData(){
+  const now = new Date();
+  const hoy = `${String(now.getDate()).padStart(2,'0')}-${String(now.getMonth()+1).padStart(2,'0')}-${now.getFullYear()}`;
+  return [
+    {fecha:`${hoy} 18:42`,sede:'San Miguel',vendedor:'Xoly',metodoPago:'Transferencia',prod1:'SUERO',qty1:2,sub1:4000,prod2:'JUGO',qty2:1,sub2:1900,total:5900},
+    {fecha:`${hoy} 19:10`,sede:'San Miguel',vendedor:'Angelo Arcoverde',metodoPago:'Efectivo',prod1:'JUGO',qty1:6,sub1:8100,prod2:'',qty2:0,sub2:0,total:8100},
+    {fecha:`${hoy} 19:45`,sede:'La Cisterna',vendedor:'Karen',metodoPago:'Transferencia',prod1:'SUERO',qty1:1,sub1:2000,prod2:'',qty2:0,sub2:0,total:2000},
+    {fecha:`${hoy} 20:05`,sede:'San Miguel',vendedor:'Angelo Alvarez',metodoPago:'Efectivo',prod1:'SUERO',qty1:6,sub1:9900,prod2:'JUGO',qty2:2,sub2:3800,total:13700},
+    {fecha:`${hoy} 20:30`,sede:'La Cisterna',vendedor:'Karen',metodoPago:'Transferencia',prod1:'JUGO',qty1:3,sub1:5700,prod2:'',qty2:0,sub2:0,total:5700},
+  ];
+}
+
+function loadData(){
+  document.getElementById('last-update').textContent = 'Actualizando...';
+  const url = 'https://script.google.com/macros/s/AKfycbweSPOGTOsvwH1EBlnTkUy9Brh6nbH43tRT8DjYS3U9haCho7icIKcU9oiGFpWnePVP0Q/exec';
+
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      renderDashboard(data);
+      const now = new Date();
+      document.getElementById('last-update').textContent =
+        `Actualizado ${now.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
+    })
+    .catch(err => {
+      console.error('Error cargando datos:', err);
+      // Fallback a mock si falla
+      renderDashboard(getMockData());
+      document.getElementById('last-update').textContent = '⚠️ Error — datos de ejemplo';
+    });
+}
+
+function normalizeRow(r){
+  return {
+    fecha:    r['FECHA Y HORA']||r['Marca de tiempo']||r.fecha||'',
+    sede:     r['SEDE']||r['Sede']||r.sede||'',
+    vendedor: r['Vendedor/a']||r['Vendedor']||r.vendedor||'',
+    metodoPago: r['MÉTODO PAGO']||r['Método Pago']||r.metodoPago||'',
+    prod1:    r['PRODUCTO 1']||r['Producto 1']||r.prod1||'',
+    qty1:     parseFloat(r['CANT. 1']||r['Cantidad 1']||r.qty1||0),
+    sub1:     parseFloat(r['SUBTOTAL P1']||r['Subtotal 1']||r.sub1||0),
+    prod2:    r['PRODUCTO 2']||r['Producto 2']||r.prod2||'',
+    qty2:     parseFloat(r['CANT. 2']||r['Cantidad 2']||r.qty2||0),
+    sub2:     parseFloat(r['SUBTOTAL P2']||r['Subtotal 2']||r.sub2||0),
+    total:    parseFloat(r['TOTAL VENTA']||r.total||0),
+  };
+}
+function renderDashboard(rawRows){
+  const rows = rawRows.map(normalizeRow).filter(r=>r.total>0);
+  const today = rows.filter(r=>isToday(r.fecha));
+  const week  = rows.filter(r=>isThisWeek(r.fecha));
+
+  // KPIs
+  const ventasHoy  = today.reduce((s,r)=>s+r.total,0);
+  const unitsHoy   = today.reduce((s,r)=>s+(r.qty1||0)+(r.qty2||0),0);
+  const costoHoy   = today.reduce((s,r)=>s+calcCosto(r.prod1,r.qty1)+calcCosto(r.prod2,r.qty2),0);
+  const margenHoy  = ventasHoy - costoHoy;
+  const margenPct  = ventasHoy>0 ? Math.round(margenHoy/ventasHoy*100) : 0;
+  const smHoy      = today.filter(r=>r.sede==='San Miguel').reduce((s,r)=>s+r.total,0);
+  const cisHoy     = today.filter(r=>r.sede==='La Cisterna').reduce((s,r)=>s+r.total,0);
+  const ventasSem  = week.reduce((s,r)=>s+r.total,0);
+
+  document.getElementById('k-ventas').textContent   = fmt(ventasHoy);
+  document.getElementById('k-units').textContent    = unitsHoy;
+  document.getElementById('k-margen').textContent   = fmt(margenHoy);
+  document.getElementById('k-margen-pct').textContent = `${margenPct}% sobre venta`;
+  document.getElementById('k-sm').textContent       = fmt(smHoy);
+  document.getElementById('k-cis').textContent      = fmt(cisHoy);
+  document.getElementById('k-semana').textContent   = fmt(ventasSem);
+
+  // Vendedores chart
+  const vChart = document.getElementById('chart-vendedores');
+  const vData = VENDEDORES.map(v=>({
+    name:v.split(' ')[0],
+    total:today.filter(r=>r.vendedor===v).reduce((s,r)=>s+r.total,0)
+  })).filter(v=>v.total>0).sort((a,b)=>b.total-a.total);
+  const maxV = vData[0]?.total||1;
+  vChart.innerHTML = vData.length ? vData.map(v=>`
+    <div class="bar-item">
+      <div class="bar-label">${v.name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${v.total/maxV*100}%"></div></div>
+      <div class="bar-val">${fmt(v.total)}</div>
+    </div>`).join('') : '<div class="empty-state">Sin ventas hoy</div>';
+
+  // Comisiones
+  const tCom = document.getElementById('table-comisiones');
+  const comData = VENDEDORES.map(v=>({
+    name:v,
+    ventas:today.filter(r=>r.vendedor===v).reduce((s,r)=>s+r.total,0)
+  })).filter(v=>v.ventas>0).sort((a,b)=>b.ventas-a.ventas);
+  tCom.innerHTML = comData.length ?
+    '<tr><th>Vendedor</th><th>Ventas</th><th>Comisión 2%</th></tr>'+
+    comData.map(v=>`<tr>
+      <td><strong>${v.name.split(' ')[0]}</strong></td>
+      <td>${fmt(v.ventas)}</td>
+      <td style="color:var(--green);font-weight:700">${fmt(v.ventas*0.02)}</td>
+    </tr>`).join('') : '<tr><td colspan="3" class="empty-state">Sin ventas hoy</td></tr>';
+
+  // Últimas ventas
+  const tbody = document.getElementById('ventas-body');
+  const recent = [...today].reverse().slice(0,10);
+  tbody.innerHTML = recent.length ? recent.map(r=>`<tr>
+    <td><strong>${getHora(r.fecha)}</strong></td>
+    <td>${r.sede==='San Miguel'?'🔴 SM':'🔵 CIS'}</td>
+    <td>${r.vendedor.split(' ')[0]}</td>
+    <td>${r.prod1||'—'}</td>
+    <td>${r.qty1||'—'}</td>
+    <td>${r.prod2||'—'}</td>
+    <td>${r.qty2||'—'}</td>
+    <td><strong style="color:var(--red)">${fmt(r.total)}</strong></td>
+    <td><span class="badge ${r.metodoPago==='Transferencia'?'blue':'green'}">${r.metodoPago==='Transferencia'?'📲':'💵'}</span></td>
+  </tr>`).join('') : '<tr><td colspan="9" class="empty-state">Sin ventas hoy</td></tr>';
+
+  // Financiero semana
+  const ventW   = ventasSem;
+  const costoW  = week.reduce((s,r)=>s+calcCosto(r.prod1,r.qty1)+calcCosto(r.prod2,r.qty2),0);
+  const margenW = ventW-costoW;
+  const pctW    = ventW>0?Math.round(margenW/ventW*100):0;
+  document.getElementById('table-financiero').innerHTML = `
+    <tr><th>Concepto</th><th>Semana</th></tr>
+    <tr><td>Ingresos</td><td><strong>${fmt(ventW)}</strong></td></tr>
+    <tr><td>Costos</td><td style="color:var(--red)">${fmt(costoW)}</td></tr>
+    <tr><td>Margen bruto</td><td style="color:var(--green);font-weight:700">${fmt(margenW)}</td></tr>
+    <tr><td>Margen %</td><td style="color:var(--amber);font-weight:700">${pctW}%</td></tr>
+    <tr><td>Comisiones equipo</td><td style="color:var(--sub2)">${fmt(ventW*0.02)}</td></tr>
+    <tr><td><strong>Ganancia neta</strong></td><td><strong style="color:var(--green);font-size:1.1rem">${fmt(margenW-ventW*0.02)}</strong></td></tr>`;
+
+  // Productos semana
+  const prodData = [
+    {name:'SUERO SM',   total:week.filter(r=>r.sede==='San Miguel'&&r.prod1==='SUERO').reduce((s,r)=>s+r.qty1,0)+week.filter(r=>r.sede==='San Miguel'&&r.prod2==='SUERO').reduce((s,r)=>s+r.qty2,0)},
+    {name:'JUGO SM',    total:week.filter(r=>r.sede==='San Miguel'&&r.prod1==='JUGO').reduce((s,r)=>s+r.qty1,0)+week.filter(r=>r.sede==='San Miguel'&&r.prod2==='JUGO').reduce((s,r)=>s+r.qty2,0)},
+    {name:'SUERO CIS',  total:week.filter(r=>r.sede==='La Cisterna'&&r.prod1==='SUERO').reduce((s,r)=>s+r.qty1,0)+week.filter(r=>r.sede==='La Cisterna'&&r.prod2==='SUERO').reduce((s,r)=>s+r.qty2,0)},
+    {name:'JUGO CIS',   total:week.filter(r=>r.sede==='La Cisterna'&&r.prod1==='JUGO').reduce((s,r)=>s+r.qty1,0)+week.filter(r=>r.sede==='La Cisterna'&&r.prod2==='JUGO').reduce((s,r)=>s+r.qty2,0)},
+  ].sort((a,b)=>b.total-a.total);
+  const maxP = prodData[0]?.total||1;
+  document.getElementById('chart-productos').innerHTML = prodData.filter(p=>p.total>0).map(p=>`
+    <div class="bar-item">
+      <div class="bar-label">${p.name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${p.total/maxP*100}%"></div></div>
+      <div class="bar-val">${p.total} uds.</div>
+    </div>`).join('') || '<div class="empty-state">Sin datos</div>';
+
+  // Stock (estático por ahora — actualiza manualmente en Sheets)
+  const stockTemplate = (items) => items.map(i=>`
+    <div class="stock-row">
+      <div><div class="stock-name">${i.tipo}</div><div class="stock-sede">${i.cap} unid. cap.</div></div>
+      <div class="prog-wrap" style="flex:1;margin:0 10px"><div class="prog-bar ${i.pct>50?'green':i.pct>20?'amber':'red'}" style="width:${i.pct}%"></div></div>
+      <div class="stock-num">${i.actual}</div>
+      <div class="stock-status">${i.pct>30?'🟢':i.pct>10?'🟡':'🔴'}</div>
+    </div>`).join('');
+
+  document.getElementById('stock-sm').innerHTML = stockTemplate([
+    {tipo:'SUERO',cap:91,actual:72,pct:79},
+    {tipo:'JUGO',cap:90,actual:18,pct:20},
+  ]);
+  document.getElementById('stock-cis').innerHTML = stockTemplate([
+    {tipo:'SUERO',cap:91,actual:45,pct:49},
+    {tipo:'JUGO',cap:90,actual:8,pct:9},
+  ]);
+}
+
+// Auto-refresh cada 2 minutos
+loadData();
+setInterval(loadData, 120000);
+</script>
+</body>
+</html>
