@@ -409,7 +409,9 @@ function isThisWeek(dateStr){
   if(!d) return false;
   const now = new Date();
   const startOfWeek = new Date(now);
-  startOfWeek.setDate(now.getDate()-now.getDay()+1);
+  const day = now.getDay(); // 0=domingo
+  const diffToMonday = day === 0 ? -6 : 1 - day; // retroceder al lunes
+  startOfWeek.setDate(now.getDate() + diffToMonday);
   startOfWeek.setHours(0,0,0,0);
   return d >= startOfWeek;
 }
@@ -458,18 +460,17 @@ function loadData(){
 }
 
 function normalizeRow(r){
-  // Map Spanish Sheets headers to app field names
   return {
-    fecha:    r['Marca de tiempo']||r.fecha||'',
-    sede:     r['Sede']||r.sede||'',
-    vendedor: r['Vendedor/a']||r.vendedor||'',
-    metodoPago: r['Método Pago']||r.metodoPago||'',
-    prod1:    r['Producto 1']||r.prod1||'',
-    qty1:     parseFloat(r['Cantidad 1']||r.qty1||0),
-    sub1:     parseFloat(r['Subtotal 1']||r.sub1||0),
-    prod2:    r['Producto 2']||r.prod2||'',
-    qty2:     parseFloat(r['Cantidad 2']||r.qty2||0),
-    sub2:     parseFloat(r['Subtotal 2']||r.sub2||0),
+    fecha:    r['FECHA Y HORA']||r['Marca de tiempo']||r.fecha||'',
+    sede:     r['SEDE']||r['Sede']||r.sede||'',
+    vendedor: r['Vendedor/a']||r['Vendedor']||r.vendedor||'',
+    metodoPago: r['MÉTODO PAGO']||r['Método Pago']||r.metodoPago||'',
+    prod1:    r['PRODUCTO 1']||r['Producto 1']||r.prod1||'',
+    qty1:     parseFloat(r['CANT. 1']||r['Cantidad 1']||r.qty1||0),
+    sub1:     parseFloat(r['SUBTOTAL P1']||r['Subtotal 1']||r.sub1||0),
+    prod2:    r['PRODUCTO 2']||r['Producto 2']||r.prod2||'',
+    qty2:     parseFloat(r['CANT. 2']||r['Cantidad 2']||r.qty2||0),
+    sub2:     parseFloat(r['SUBTOTAL P2']||r['Subtotal 2']||r.sub2||0),
     total:    parseFloat(r['TOTAL VENTA']||r.total||0),
   };
 }
