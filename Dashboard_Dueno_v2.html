@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>DB Boxing — Ventas del Día</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E8002D; --black:#060606; --card:#141414;
+  --border:#222; --text:#f0f0f0; --sub:#777;
+  --green:#00C853; --amber:#FF9100;
+  --italian-green:#009246; --italian-red:#CE2B37;
+  --display:'Bebas Neue',cursive;
+  --cond:'Barlow Condensed',sans-serif;
+  --sans:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--black);color:var(--text);min-height:100vh}
+
+/* Header */
+.header{
+  background:linear-gradient(135deg,#0a0a0a,#1a0005,#080808);
+  border-bottom:2px solid var(--red);
+  padding:20px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 150%,rgba(232,0,45,0.2),transparent 70%);
+}
+.logo{
+  font-family:var(--display);font-size:2.4rem;letter-spacing:4px;
+  position:relative;
+}
+.logo .g{color:var(--italian-green)}
+.logo .w{color:#fff}
+.logo .r{color:var(--italian-red)}
+.header-sub{
+  font-family:var(--cond);font-size:0.72rem;letter-spacing:3px;
+  text-transform:uppercase;color:var(--sub);margin-top:4px;position:relative;
+}
+.flag{display:flex;height:3px}
+.flag div{flex:1}
+.flag .fg{background:var(--italian-green)}
+.flag .fw{background:#fff}
+.flag .fr{background:var(--italian-red)}
+
+/* Date bar */
+.date-bar{
+  background:#0f0f0f;border-bottom:1px solid var(--border);
+  padding:10px 20px;display:flex;align-items:center;justify-content:space-between;
+}
+.date-label{font-family:var(--cond);font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--sub)}
+.live-wrap{display:flex;align-items:center;gap:6px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.live-text{font-family:var(--cond);font-size:0.65rem;letter-spacing:1px;color:var(--green);text-transform:uppercase}
+
+/* Main */
+.page{padding:20px 16px 40px;max-width:500px;margin:0 auto}
+
+/* BIG total */
+.total-hero{
+  background:linear-gradient(135deg,#1a0008,#0a0a0a);
+  border:1px solid var(--red);border-radius:16px;
+  padding:32px 20px;text-align:center;margin-bottom:20px;
+  position:relative;overflow:hidden;
+  animation:fadeUp 0.5s ease both;
+}
+.total-hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--italian-green),#fff,var(--italian-red));
+}
+.total-label{font-family:var(--cond);font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--sub);margin-bottom:8px}
+.total-amount{font-family:var(--display);font-size:4rem;letter-spacing:2px;color:#fff;line-height:1}
+.total-amount .currency{color:var(--red);font-size:2rem}
+.total-units{margin-top:8px;font-family:var(--cond);font-size:0.85rem;color:var(--sub);letter-spacing:1px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* Sedes */
+.sedes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.sede-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:16px;text-align:center;
+  animation:fadeUp 0.5s ease 0.1s both;
+}
+.sede-icon{font-size:1.6rem;margin-bottom:6px;display:block}
+.sede-name{font-family:var(--cond);font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub);margin-bottom:4px}
+.sede-total{font-family:var(--display);font-size:1.8rem;color:#fff}
+
+/* Ventas list */
+.ventas-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;
+  animation:fadeUp 0.5s ease 0.2s both;
+}
+.ventas-head{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.ventas-head h3{font-family:var(--cond);font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub)}
+.venta-row{
+  padding:12px 16px;border-bottom:1px solid #1a1a1a;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.venta-row:last-child{border:none}
+.venta-left{}
+.venta-time{font-family:var(--cond);font-size:0.8rem;font-weight:700;color:#fff}
+.venta-detail{font-size:0.72rem;color:var(--sub);margin-top:2px}
+.venta-amount{font-family:var(--display);font-size:1.4rem;color:var(--red)}
+
+.empty{text-align:center;padding:24px;color:var(--sub);font-size:0.82rem}
+
+/* Footer note */
+.footer-note{
+  text-align:center;margin-top:24px;
+  font-family:var(--cond);font-size:0.62rem;letter-spacing:1px;
+  text-transform:uppercase;color:var(--border);
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo"><span class="g">DI</span><span class="w">VISI</span><span class="r">ÓN</span> <span class="w">BOX</span></div>
+  <div class="header-sub">Ventas del Día</div>
+</div>
+<div class="flag"><div class="fg"></div><div class="fw"></div><div class="fr"></div></div>
+
+<div class="date-bar">
+  <div class="date-label" id="fecha-hoy">—</div>
+  <div class="live-wrap">
+    <div class="live-dot"></div>
+    <div class="live-text" id="update-time">En vivo</div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- TOTAL DEL DÍA -->
+  <div class="total-hero">
+    <div class="total-label">💰 Total Vendido Hoy</div>
+    <div class="total-amount"><span class="currency">$</span><span id="total-dia">0</span></div>
+    <div class="total-units" id="total-units-label">0 unidades vendidas</div>
+  </div>
+
+  <!-- POR SEDE -->
+  <div class="sedes">
+    <div class="sede-card">
+      <span class="sede-icon">🥊</span>
+      <div class="sede-name">San Miguel</div>
+      <div class="sede-total" id="sm-total">$0</div>
+    </div>
+    <div class="sede-card">
+      <span class="sede-icon">🥊</span>
+      <div class="sede-name">La Cisterna</div>
+      <div class="sede-total" id="cis-total">$0</div>
+    </div>
+  </div>
+
+  <!-- LISTA DE VENTAS -->
+  <div class="ventas-card">
+    <div class="ventas-head">
+      <h3>🕐 Ventas de hoy</h3>
+      <span id="count-ventas" style="font-family:var(--cond);font-size:0.65rem;color:var(--sub)">0 registros</span>
+    </div>
+    <div id="ventas-list">
+      <div class="empty">Cargando ventas...</div>
+    </div>
+  </div>
+
+  <div class="footer-note">Vista de solo lectura · Actualiza automáticamente</div>
+</div>
+
+<script>
+// ── CONFIGURACIÓN ──────────────────────────────────
+// Reemplaza con tu Apps Script URL (mismo que el admin)
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweSPOGTOsvwH1EBlnTkUy9Brh6nbH43tRT8DjYS3U9haCho7icIKcU9oiGFpWnePVP0Q/exec';
+
+function fmt(n){return '$'+Math.round(n).toLocaleString('es-CL')}
+
+
+
+// Mock data — reemplaza con fetch real cuando conectes Sheets
+function getMockData(){
+  const now = new Date();
+  const hoy = `${String(now.getDate()).padStart(2,'0')}-${String(now.getMonth()+1).padStart(2,'0')}-${now.getFullYear()}`;
+  return [
+    {fecha:`${hoy} 18:42`,sede:'San Miguel',vendedor:'Xoly',prod1:'SUERO',qty1:2,prod2:'JUGO',qty2:1,total:5900},
+    {fecha:`${hoy} 19:10`,sede:'San Miguel',vendedor:'Angelo Arcoverde',prod1:'JUGO',qty1:6,prod2:'',qty2:0,total:8100},
+    {fecha:`${hoy} 19:45`,sede:'La Cisterna',vendedor:'Karen',prod1:'SUERO',qty1:1,prod2:'',qty2:0,total:2000},
+    {fecha:`${hoy} 20:05`,sede:'San Miguel',vendedor:'Angelo Alvarez',prod1:'SUERO',qty1:6,prod2:'JUGO',qty2:2,total:13700},
+    {fecha:`${hoy} 20:30`,sede:'La Cisterna',vendedor:'Karen',prod1:'JUGO',qty1:3,prod2:'',qty2:0,total:5700},
+  ];
+}
+
+function parseDate(dateStr){
+  if(!dateStr) return null;
+  const clean = String(dateStr).trim();
+  const match = clean.match(/(\d{2})-(\d{2})-(\d{4})/);
+  if(!match) return null;
+  const [,day,month,year] = match;
+  const timePart = clean.split(' ').slice(1).join(' ');
+  let hour=0,min=0;
+  const tMatch = timePart.match(/(\d{1,2}):(\d{2})/);
+  if(tMatch){
+    hour=parseInt(tMatch[1]); min=parseInt(tMatch[2]);
+    if(timePart.toLowerCase().includes('p') && hour<12) hour+=12;
+    if(timePart.toLowerCase().includes('a') && hour===12) hour=0;
+  }
+  return new Date(parseInt(year),parseInt(month)-1,parseInt(day),hour,min);
+}
+function isToday(dateStr){
+  const d=parseDate(dateStr);
+  if(!d) return false;
+  const t=new Date();
+  return d.getDate()===t.getDate()&&d.getMonth()===t.getMonth()&&d.getFullYear()===t.getFullYear();
+}
+function getHora(dateStr){
+  if(!dateStr) return '';
+  const clean=String(dateStr).trim();
+  const tMatch=clean.match(/(\d{1,2}):(\d{2})/);
+  if(!tMatch) return '';
+  let h=parseInt(tMatch[1]),m=tMatch[2];
+  if(clean.toLowerCase().includes('p')&&h<12) h+=12;
+  if(clean.toLowerCase().includes('a')&&h===12) h=0;
+  return `${String(h).padStart(2,'0')}:${m}`;
+}
+function normalizeRow(r){
+  return {
+    fecha:    r['Marca de tiempo']||r.fecha||'',
+    sede:     r['Sede']||r.sede||'',
+    vendedor: r['Vendedor/a']||r.vendedor||'',
+    prod1:    r['Producto 1']||r.prod1||'',
+    qty1:     parseFloat(r['Cantidad 1']||r.qty1||0),
+    prod2:    r['Producto 2']||r.prod2||'',
+    qty2:     parseFloat(r['Cantidad 2']||r.qty2||0),
+    total:    parseFloat(r['TOTAL VENTA']||r.total||0),
+  };
+}
+function loadData(){
+  const url = 'https://script.google.com/macros/s/AKfycbweSPOGTOsvwH1EBlnTkUy9Brh6nbH43tRT8DjYS3U9haCho7icIKcU9oiGFpWnePVP0Q/exec';
+  fetch(url)
+    .then(r=>r.json())
+    .then(rawData=>{
+      const data = rawData.map(normalizeRow).filter(r=>r.total>0);
+      const today = data.filter(r=>isToday(r.fecha));
+      renderToday(today);
+    })
+    .catch(err=>{
+      console.error('Error:',err);
+      const data = getMockData();
+      const today = data.filter(r=>isToday(r.fecha));
+      renderToday(today);
+    });
+}
+function renderToday(today){
+
+  // Fecha
+  const now = new Date();
+  document.getElementById('fecha-hoy').textContent =
+    now.toLocaleDateString('es-CL',{weekday:'long',day:'numeric',month:'long'}).toUpperCase();
+  document.getElementById('update-time').textContent =
+    `Actualizado ${now.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
+
+  // Totales
+  const totalDia = today.reduce((s,r)=>s+r.total,0);
+  const unidades = today.reduce((s,r)=>s+(r.qty1||0)+(r.qty2||0),0);
+  const smTotal  = today.filter(r=>r.sede==='San Miguel').reduce((s,r)=>s+r.total,0);
+  const cisTotal = today.filter(r=>r.sede==='La Cisterna').reduce((s,r)=>s+r.total,0);
+
+  document.getElementById('total-dia').textContent = Math.round(totalDia).toLocaleString('es-CL');
+  document.getElementById('total-units-label').textContent = `${unidades} unidades vendidas`;
+  document.getElementById('sm-total').textContent  = fmt(smTotal);
+  document.getElementById('cis-total').textContent = fmt(cisTotal);
+  document.getElementById('count-ventas').textContent = `${today.length} registros`;
+
+  // Lista ventas
+  const list = document.getElementById('ventas-list');
+  const reversed = [...today].reverse();
+  list.innerHTML = reversed.length ? reversed.map(r=>`
+    <div class="venta-row">
+      <div class="venta-left">
+        <div class="venta-time">${getHora(r.fecha)} · ${r.sede==='San Miguel'?'🔴 San Miguel':'🔵 La Cisterna'}</div>
+        <div class="venta-detail">
+          ${r.qty1||0} ${r.prod1||''}${r.prod2?` + ${r.qty2||0} ${r.prod2}`:''}
+        </div>
+      </div>
+      <div class="venta-amount">${fmt(r.total)}</div>
+    </div>`).join('') : '<div class="empty">Sin ventas registradas hoy</div>';
+}
+
+}
+loadData();
+setInterval(loadData, 120000);
+</script>
+</body>
+</html>
